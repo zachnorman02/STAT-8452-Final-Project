@@ -17,6 +17,9 @@ data = read_csv("Sleep_health_and_lifestyle_dataset.csv")
 dim(data)
 names(data)
 head(data)
+data %>% 
+  group_by(Occupation) %>% 
+  summarize(n=n())
 ```
 
 ## Goal
