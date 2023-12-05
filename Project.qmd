@@ -8,34 +8,61 @@ editor: visual
 library(tidyverse)
 ```
 
-## Data
-
-The data is on sleep quality and comes from [Kaggle](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset). It contains variables on gender, age, occupation, sleep duration and quality, stress level, physical activity and daily steps, heart rate, BMI, blood pressure, and whether the person has a sleep disorder.
 
 ```{r, message=FALSE}
-data = read_csv("Sleep_health_and_lifestyle_dataset.csv")
+data = read_csv("Sleep_Analysis.csv")
 dim(data)
 names(data)
 head(data)
-data %>% 
-  group_by(Occupation) %>% 
-  summarize(n=n())
+```
+```{r}
+colnames(data) = make.names(colnames(data)) %>% unique()
+data %>%
+  mutate(
+    physical.illness = if_else(physical.illness=='no',0,1),
+    bluelight.filter = ifelse(bluelight.filter=='no',0,1),
+    smoke.drink = ifelse(smoke.drink=='no',0,1),
+    meals.day = case_when(
+      meals.day=='one'~1,
+      meals.day=='two'~2,
+      meals.day=='three'~3,
+      meals.day=='four'~4,
+      meals.day=='five'~5,
+      meals.day=='more than 5'~6,
+      .default=0
+    )
+  )
+data
 ```
 
-## Goal
+# Mean Sleep Duration
 
-The goal is to determine what factors affect sleep quality the most, and what the average sleep quality and length of sleep are, both across the sample and when breaking the sample down into different groups based on health, occupation, age, etc.
+```{r}
+sleep_time = data %>% 
+  filter(round(sleep.time,4) != 6.7575) %>% 
+  select(sleep.time)
 
-## Variables I plan on analyzing
+sleep_time %>% 
+  ggplot() +
+    geom_density(aes(x=sleep.time))
+```
 
--   Sleep duration (quantitative) and sleep quality (ordinal)
 
--   Compare differences in groups (compare across occupations, sleep disorders, gender, age, etc)
+```{r}
+mean(data$sleep.time)
+t.test(sleep_time, mu=7)
+```
 
-## Hypotheses
+# Compare male/female
+```{r}
+data_by_gender = data %>% 
+  select(Gender, sleep.time) %>%
+  filter(Gender %in% c("Male", "Female"), round(sleep.time,4) != 6.7575)
 
--   More people have poor quality of sleep (between 1-5) than good quality (between 6-10)
+t.test(sleep.time ~ Gender, data=data_by_gender)
+```
 
--   Those with higher stress levels will get less sleep and have lower sleep quality than those with lower stress levels
+```{r}
+wilcox.test(sleep.time ~ Gender, data=data_by_gender)
+```
 
--   There is a difference in sleep quality based on the number of steps a person takes per day and the amount of physical activity they do
