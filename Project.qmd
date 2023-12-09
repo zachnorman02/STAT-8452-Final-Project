@@ -17,7 +17,7 @@ head(data)
 ```
 ```{r}
 colnames(data) = make.names(colnames(data)) %>% unique()
-data %>%
+data = data %>%
   mutate(
     physical.illness = if_else(physical.illness=='no',0,1),
     bluelight.filter = ifelse(bluelight.filter=='no',0,1),
@@ -30,6 +30,16 @@ data %>%
       meals.day=='five'~5,
       meals.day=='more than 5'~6,
       .default=0
+    ),
+    screen.time = case_when(
+      screen.time=="2hrs"~2,
+      screen.time=="3-4 hrs"~3.5,
+      screen.time=="1-2 hrs"~1.5,
+      screen.time=="2-3 hrs"~2.5,
+      screen.time=="4-5 hrs"~4.5,
+      screen.time=="more than 5"~5.5,
+      screen.time=="0-1 hrs"~0.5,
+      .default=0
     )
   )
 data
@@ -39,8 +49,8 @@ data
 
 ```{r}
 sleep_time = data %>% 
-  filter(round(sleep.time,4) != 6.7575) %>% 
-  select(sleep.time)
+  dplyr::filter(round(sleep.time,4) != 6.7575) %>% 
+  dplyr::select(sleep.time)
 
 sleep_time %>% 
   ggplot() +
@@ -51,18 +61,22 @@ sleep_time %>%
 ```{r}
 mean(data$sleep.time)
 t.test(sleep_time, mu=7)
+wilcox.test(sleep_time,mu=7)
 ```
 
 # Compare male/female
 ```{r}
 data_by_gender = data %>% 
-  select(Gender, sleep.time) %>%
-  filter(Gender %in% c("Male", "Female"), round(sleep.time,4) != 6.7575)
+  dplyr::select(Gender, sleep.time) %>%
+  dplyr::filter(Gender %in% c("Male", "Female"), round(sleep.time,4) != 6.7575)
 
-t.test(sleep.time ~ Gender, data=data_by_gender)
+data_by_gender %>% 
+  ggplot() +
+    geom_density(aes(x=sleep.time,color=Gender))
 ```
 
 ```{r}
+t.test(sleep.time ~ Gender, data=data_by_gender)
 wilcox.test(sleep.time ~ Gender, data=data_by_gender)
 ```
 
