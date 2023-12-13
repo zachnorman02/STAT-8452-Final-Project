@@ -6,6 +6,7 @@ editor: visual
 
 ```{r setup, include=F}
 library(tidyverse)
+library(patchwork)
 ```
 
 
@@ -15,8 +16,10 @@ dim(data)
 names(data)
 head(data)
 ```
+There are a couple of rows that appear to be close-duplicates (only difference is sleep time: one is 2 hours (the only non-binned value), and the other is 2-3 hours (which includes the non-binned value)). In addition, they both have sleep duration values of 6.7575, a strange value-- which also equals the sample mean of the dataset. Therefore, I have decided to exclude these 2 rows in my analysis.
+
 ```{r}
-colnames(data) = make.names(colnames(data)) %>% unique()
+colnames(data) = make.names(colnames(data))
 data = data %>%
   mutate(
     physical.illness = if_else(physical.illness=='no',0,1),
@@ -42,41 +45,107 @@ data = data %>%
       .default=0
     )
   )
-data
 ```
+
+```{r}
+filter_data = function(df) {
+  df %>% dplyr::filter(round(sleep.time,4) != 6.7575)
+}
+data_cleaned = filter_data(data)
+data_cleaned
+```
+
+```{r}
+plot_density = function(df, group, is_filtered) {
+  title = paste0(
+    "Density by ",
+    str_to_title(group)
+  )
+  subtitle = ifelse(is_filtered, "Removing Non-Rounded Values", "Full Data")
+  return(
+    df %>% 
+      ggplot() +
+        geom_density(aes_string(x="sleep.time",color=group)) +
+        labs(x="Sleep Duration", y="Density") +
+        ggtitle(label=title, subtitle=subtitle)
+  )
+}
+
+plot_and_test = function(df, group) {
+  cleaned_df = filter_data(df)
+  
+  plots = list()
+  plots$orig = plot_density(df, group, F)
+  plots$clean = plot_density(cleaned_df, group, T)
+  print(
+    plots$orig + 
+      plots$clean + 
+      plot_layout(ncol = 2, nrow = 1)
+  )
+  
+  formula_string = paste0("sleep.time~", group)
+  formula = as.formula(formula_string)
+  print("###Cleaned Data###")
+  print(t.test(formula, data=cleaned_df))
+  print(wilcox.test(formula, data=df))
+  print("###Full Data###")
+  print(t.test(formula, data=df))
+  print(wilcox.test(formula, data=df))
+}
+```
+
 
 # Mean Sleep Duration
 
 ```{r}
-sleep_time = data %>% 
-  dplyr::filter(round(sleep.time,4) != 6.7575) %>% 
-  dplyr::select(sleep.time)
-
-sleep_time %>% 
-  ggplot() +
-    geom_density(aes(x=sleep.time))
+ggplot() +
+  geom_density(data=data,aes(x=sleep.time, color="data")) +
+  geom_density(data=data_cleaned,aes(x=sleep.time, color="data_cleaned"))
 ```
 
-
+## Cleaned
 ```{r}
-mean(data$sleep.time)
-t.test(sleep_time, mu=7)
-wilcox.test(sleep_time,mu=7)
+# parametric
+med=median(data_cleaned$sleep.time)
+t.test(data_cleaned$sleep.time, mu=med)
+
+# non-parametric (sign test)
+above = data_cleaned %>% 
+  mutate(sign = sleep.time > med) %>% 
+  filter(sign == 1) %>% 
+  nrow()
+binom.test(above,data_cleaned %>% nrow(),0.5)
+```
+# Non-cleaned
+```{r}
+# parametric
+med=median(data$sleep.time)
+t.test(data_cleaned$sleep.time, mu=med)
+
+# non-parametric (sign test)
+above = data %>% 
+  mutate(sign = sleep.time > med) %>% 
+  filter(sign == 1) %>% 
+  nrow()
+binom.test(above,data %>% nrow(),0.5)
 ```
 
 # Compare male/female
 ```{r}
 data_by_gender = data %>% 
-  dplyr::select(Gender, sleep.time) %>%
-  dplyr::filter(Gender %in% c("Male", "Female"), round(sleep.time,4) != 6.7575)
+  dplyr::filter(Gender %in% c("Male", "Female"))
 
-data_by_gender %>% 
-  ggplot() +
-    geom_density(aes(x=sleep.time,color=Gender))
+plot_and_test(data_by_gender, "Gender")
 ```
-
+## Direction of sleep
+Data claims southwest is best. As we only have 4 directions, we will test for south/west vs north/east
 ```{r}
-t.test(sleep.time ~ Gender, data=data_by_gender)
-wilcox.test(sleep.time ~ Gender, data=data_by_gender)
+data_direction = data %>% 
+  mutate(
+    south_west=sleep.direction %in% c("south","west")
+  )
+data_direction
+
+plot_and_test(data_direction, "south_west")
 ```
 
