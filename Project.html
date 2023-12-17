@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Final Project</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Project_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Project_files/libs/quarto-html/quarto.js"></script>
+<script src="Project_files/libs/quarto-html/popper.min.js"></script>
+<script src="Project_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Project_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Project_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Project_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Project_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Project_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Final Project</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<p><a href="https://www.kaggle.com/datasets/krupa1999/sleep-pattern">The dataset is from Kaggle</a> and contains 46 rows. The data came from a survey about sleep. It includes quantitative (ordinal and continuous) and categorical variables, as well as small groups within each variable, making it well-suited for a wide variety parametric and non-parametric tests. Columns include:</p>
+<ul>
+<li><p>Age</p></li>
+<li><p>Gender</p></li>
+<li><p>Meals per day</p></li>
+<li><p>Whether they have a physical illness (yes/no)</p></li>
+<li><p>Amount of screen time each day (0-1 hrs, 1-2 hrs, etc)</p></li>
+<li><p>Whether they use bluelight filters (yes/no) * What direction they sleep in (north, south, east, west)</p></li>
+<li><p>Whether they exercise (yes, no sometimes)</p></li>
+<li><p>Whether they smoke or drink (yes/no)</p></li>
+<li><p>Preferred beverage (coffee, tea, neither, both)</p></li>
+<li><p>Amount of sleep each night (in hrs)</p></li>
+</ul>
+<p>The goal is to see which variables, if any, influence length of sleep.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"Sleep_Analysis.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 46 11</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Age"              "Gender"           "meals/day"        "physical illness"
+ [5] "screen time"      "bluelight filter" "sleep direction"  "exercise"        
+ [9] "smoke/drink"      "beverage"         "sleep time"      </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 11
+    Age Gender `meals/day` `physical illness` `screen time` `bluelight filter`
+  &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;              &lt;chr&gt;         &lt;chr&gt;             
+1    22 Male   two         no                 2hrs          yes               
+2    22 Female three       no                 3-4 hrs       no                
+3    23 Male   three       no                 3-4 hrs       no                
+4    23 Female two         no                 1-2 hrs       no                
+5    22 Male   three       no                 more than 5   yes               
+6    22 Male   two         no                 2-3 hrs       yes               
+# ℹ 5 more variables: `sleep direction` &lt;chr&gt;, exercise &lt;chr&gt;,
+#   `smoke/drink` &lt;chr&gt;, beverage &lt;chr&gt;, `sleep time` &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>There are a couple of rows that appear to be close-duplicates (only difference is sleep time: one is 2 hours (the only non-binned value), and the other is 2-3 hours (which includes the non-binned value)). In addition, they both have sleep duration values of 6.7575, a strange value– which also equals the sample mean of the dataset. I have decided to do my analyses both with these 2 rows and excluding these 2 rows, to see what impact they may have.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(data) <span class="ot">=</span> <span class="fu">make.names</span>(<span class="fu">colnames</span>(data))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">physical.illness =</span> <span class="fu">if_else</span>(physical.illness<span class="sc">==</span><span class="st">'no'</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">bluelight.filter =</span> <span class="fu">ifelse</span>(bluelight.filter<span class="sc">==</span><span class="st">'no'</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">smoke.drink =</span> <span class="fu">ifelse</span>(smoke.drink<span class="sc">==</span><span class="st">'no'</span>,<span class="dv">0</span>,<span class="dv">1</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">meals.day =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      meals.day<span class="sc">==</span><span class="st">'one'</span><span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      meals.day<span class="sc">==</span><span class="st">'two'</span><span class="sc">~</span><span class="dv">2</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      meals.day<span class="sc">==</span><span class="st">'three'</span><span class="sc">~</span><span class="dv">3</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      meals.day<span class="sc">==</span><span class="st">'four'</span><span class="sc">~</span><span class="dv">4</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      meals.day<span class="sc">==</span><span class="st">'five'</span><span class="sc">~</span><span class="dv">5</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      meals.day<span class="sc">==</span><span class="st">'more than 5'</span><span class="sc">~</span><span class="dv">6</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default=</span><span class="dv">0</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">screen.time =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>      screen.time<span class="sc">==</span><span class="st">"2hrs"</span><span class="sc">~</span><span class="dv">2</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      screen.time<span class="sc">==</span><span class="st">"3-4 hrs"</span><span class="sc">~</span><span class="fl">3.5</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      screen.time<span class="sc">==</span><span class="st">"1-2 hrs"</span><span class="sc">~</span><span class="fl">1.5</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>      screen.time<span class="sc">==</span><span class="st">"2-3 hrs"</span><span class="sc">~</span><span class="fl">2.5</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>      screen.time<span class="sc">==</span><span class="st">"4-5 hrs"</span><span class="sc">~</span><span class="fl">4.5</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>      screen.time<span class="sc">==</span><span class="st">"more than 5"</span><span class="sc">~</span><span class="fl">5.5</span>,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>      screen.time<span class="sc">==</span><span class="st">"0-1 hrs"</span><span class="sc">~</span><span class="fl">0.5</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default=</span><span class="dv">0</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Making the filtered dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>filter_data <span class="ot">=</span> <span class="cf">function</span>(df) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">round</span>(sleep.time,<span class="dv">4</span>) <span class="sc">!=</span> <span class="fl">6.7575</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>data_cleaned <span class="ot">=</span> <span class="fu">filter_data</span>(data)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>data_cleaned</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 44 × 11
+     Age Gender meals.day physical.illness screen.time bluelight.filter
+   &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+ 1    22 Female         3                0         3.5                0
+ 2    23 Male           3                0         3.5                0
+ 3    23 Female         2                0         1.5                0
+ 4    22 Male           3                0         5.5                1
+ 5    22 Male           4                0         1.5                1
+ 6    24 Female         3                1         4.5                0
+ 7    24 Male           4                0         2.5                1
+ 8    23 Female         3                0         5.5                1
+ 9    28 Female         3                0         0.5                1
+10    59 Male           2                0         0.5                0
+# ℹ 34 more rows
+# ℹ 5 more variables: sleep.direction &lt;chr&gt;, exercise &lt;chr&gt;, smoke.drink &lt;dbl&gt;,
+#   beverage &lt;chr&gt;, sleep.time &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="plottest-function" class="level1">
+<h1>Plot/Test Function</h1>
+<p>Less typing overall. Creates the plots and runs the tests.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot_density <span class="ot">=</span> <span class="cf">function</span>(df, group, is_filtered, <span class="at">upper_limit=</span><span class="dv">1</span>) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  label <span class="ot">=</span> <span class="fu">str_to_title</span>(<span class="fu">str_replace_all</span>(group, <span class="st">"[._]"</span>, <span class="st">" "</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  title <span class="ot">=</span> <span class="fu">paste0</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Density by "</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    label</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  subtitle <span class="ot">=</span> <span class="fu">ifelse</span>(is_filtered, <span class="st">"Removing Non-Rounded Values"</span>, <span class="st">"Full Data"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.factor</span>(df[[group]]) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.character</span>(df[[group]])) {</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    df[[group]] <span class="ot">=</span> <span class="fu">factor</span>(df[[group]])</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span> </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span>sleep.time,<span class="at">color=</span><span class="sc">!!</span><span class="fu">sym</span>(group))) <span class="sc">+</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Sleep Duration"</span>, <span class="at">y=</span><span class="st">"Density"</span>, <span class="at">color=</span>label) <span class="sc">+</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="at">label=</span>title, <span class="at">subtitle=</span>subtitle) <span class="sc">+</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,upper_limit,<span class="at">by=</span><span class="fl">0.2</span>), <span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,upper_limit))</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>plot_and_test <span class="ot">=</span> <span class="cf">function</span>(df, group, <span class="at">groups=</span><span class="dv">2</span>, <span class="at">upper_limit=</span><span class="dv">1</span>) {</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  cleaned_df <span class="ot">=</span> <span class="fu">filter_data</span>(df)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(<span class="sc">!!</span><span class="fu">sym</span>(group)) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">n=</span><span class="fu">n</span>(),<span class="at">var=</span><span class="fu">var</span>(sleep.time)))</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(cleaned_df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(<span class="sc">!!</span><span class="fu">sym</span>(group)) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">n=</span><span class="fu">n</span>(),<span class="at">var=</span><span class="fu">var</span>(sleep.time)))</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  orig_plot <span class="ot">=</span> <span class="fu">plot_density</span>(df, group, F, upper_limit)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  clean_plot <span class="ot">=</span> <span class="fu">plot_density</span>(cleaned_df, group, T, upper_limit)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(orig_plot)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(clean_plot)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  formula_string <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"sleep.time~"</span>, group)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  formula <span class="ot">=</span> <span class="fu">as.formula</span>(formula_string)</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (groups<span class="sc">==</span><span class="dv">2</span>) {</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"###Cleaned Data###"</span>)</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">t.test</span>(formula, <span class="at">data=</span>cleaned_df))</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">wilcox.test</span>(formula, <span class="at">data=</span>cleaned_df))</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"###Full Data###"</span>)</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">t.test</span>(formula, <span class="at">data=</span>df))</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">wilcox.test</span>(formula, <span class="at">data=</span>df))</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"###Cleaned Data###"</span>)</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">oneway.test</span>(formula,<span class="at">data=</span>cleaned_df,<span class="at">var.equal=</span>T))</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">kruskal.test</span>(formula,<span class="at">data=</span>cleaned_df))</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"###Full Data###"</span>)</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">oneway.test</span>(formula,<span class="at">data=</span>df,<span class="at">var.equal=</span>T))</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">kruskal.test</span>(formula,<span class="at">data=</span>df))</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="mean-sleep-duration" class="level1">
+<h1>Mean Sleep Duration</h1>
+<section id="one-group" class="level2">
+<h2 class="anchored" data-anchor-id="one-group">One group:</h2>
+<p>t-test assumptions:</p>
+<ul>
+<li><p>X’s are independent</p></li>
+<li><p>Data is from a normal distribution</p></li>
+<li><p>Data is continuous</p></li>
+</ul>
+<p>Sign Test assumptions: x’s are iid and are from a continuous (or at least ordinal) distribution</p>
+<p>Here, I am testing for if the mean/median are 7, since that is the recommended minimum amoung of sleep for adults.</p>
+<p>Parametric: <span class="math inline">\(H_0: \mu = 7\)</span>, <span class="math inline">\(H_a: \mu \neq 7\)</span></p>
+<p>Non-parametric: <span class="math inline">\(H_0: \theta_{0.5} = 7\)</span>, <span class="math inline">\(H_a: \theta_{0.5} \neq 7\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">data=</span>data,<span class="fu">aes</span>(<span class="at">x=</span>sleep.time, <span class="at">color=</span><span class="st">"data"</span>)) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">data=</span>data_cleaned,<span class="fu">aes</span>(<span class="at">x=</span>sleep.time, <span class="at">color=</span><span class="st">"data_cleaned"</span>)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="at">by=</span><span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"Sleep Time Density (Cleaned and Full)"</span>, <span class="at">color=</span><span class="st">"Data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="cleaned" class="level3">
+<h3 class="anchored" data-anchor-id="cleaned">Cleaned</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parametric</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(data_cleaned<span class="sc">$</span>sleep.time, <span class="at">mu=</span><span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  data_cleaned$sleep.time
+t = -1.1657, df = 43, p-value = 0.2502
+alternative hypothesis: true mean is not equal to 7
+95 percent confidence interval:
+ 6.337962 7.177038
+sample estimates:
+mean of x 
+   6.7575 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># non-parametric (sign test)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: originally did this by manually finding how many are above the median</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and doing binom.test, but I got an absurdly small value that did not make sense</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># I looked at 2 packages with sign test functions and they both gave me the same</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># p-value, and have the same S value I came up with, so I probably did something</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># wrong, but decided to go with the package test since that made more sense</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">SignTest</span>(data_cleaned<span class="sc">$</span>sleep.time,<span class="at">mu=</span><span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One-sample Sign-Test
+
+data:  data_cleaned$sleep.time
+S = 13, number of differences = 28, p-value = 0.8506
+alternative hypothesis: true median is not equal to 7
+95.1 percent confidence interval:
+ 7 7
+sample estimates:
+median of the differences 
+                        7 </code></pre>
+</div>
+</div>
+<p>Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest the mean/median is not 7.</p>
+</section>
+<section id="non-cleaned" class="level3">
+<h3 class="anchored" data-anchor-id="non-cleaned">Non cleaned</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parametric</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(data<span class="sc">$</span>sleep.time, <span class="at">mu=</span><span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  data$sleep.time
+t = -1.2193, df = 45, p-value = 0.2291
+alternative hypothesis: true mean is not equal to 7
+95 percent confidence interval:
+ 6.35692 7.15808
+sample estimates:
+mean of x 
+   6.7575 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># non-parametric (sign test)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">SignTest</span>(data<span class="sc">$</span>sleep.time,<span class="at">mu=</span><span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One-sample Sign-Test
+
+data:  data$sleep.time
+S = 13, number of differences = 30, p-value = 0.5847
+alternative hypothesis: true median is not equal to 7
+97.4 percent confidence interval:
+ 6.7575 7.0000
+sample estimates:
+median of the differences 
+                        7 </code></pre>
+</div>
+</div>
+<p>Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest the mean/median is not 7.</p>
+</section>
+<section id="variances" class="level3">
+<h3 class="anchored" data-anchor-id="variances">Variances</h3>
+<p>F-test assumptions:</p>
+<ul>
+<li><p>Both distributions are normally distributed</p></li>
+<li><p>Populations are independent</p></li>
+</ul>
+<p>Ansari-Bradley assumptions:</p>
+<ul>
+<li><p>Observations are from an continuous/ordinal distribution</p></li>
+<li><p>Observations are iid</p></li>
+<li><p>Groups are mutually independent</p></li>
+<li><p>Medians are equal</p></li>
+</ul>
+<p>F-test: <span class="math inline">\(H_0: \sigma_F = \sigma_C\)</span>, <span class="math inline">\(H_a: \sigma_F \neq \sigma_C\)</span></p>
+<p>Ansari-Bradley: <span class="math inline">\(F_F(x) = F_C(\frac{x-\theta}{\eta})\)</span> <span class="math inline">\(H_0: \eta = 1\)</span>, <span class="math inline">\(H_a: \eta \neq 1\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(data<span class="sc">$</span>sleep.time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.819587</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(data_cleaned<span class="sc">$</span>sleep.time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.904219</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var.test</span>(data<span class="sc">$</span>sleep.time, data_cleaned<span class="sc">$</span>sleep.time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    F test to compare two variances
+
+data:  data$sleep.time and data_cleaned$sleep.time
+F = 0.95556, num df = 45, denom df = 43, p-value = 0.879
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.523951 1.735538
+sample estimates:
+ratio of variances 
+         0.9555556 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ansari.test</span>(data<span class="sc">$</span>sleep.time, data_cleaned<span class="sc">$</span>sleep.time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in ansari.test.default(data$sleep.time, data_cleaned$sleep.time):
+cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Ansari-Bradley test
+
+data:  data$sleep.time and data_cleaned$sleep.time
+AB = 1151, p-value = 0.2551
+alternative hypothesis: true ratio of scales is not equal to 1</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="two-groups" class="level2">
+<h2 class="anchored" data-anchor-id="two-groups">Two groups</h2>
+<p>2-sample t-test assumptions:</p>
+<ul>
+<li><p>Data is continuous and from a normal distribution</p></li>
+<li><p>Groups are independent</p></li>
+</ul>
+<p>Rank Sum assumptions:</p>
+<ul>
+<li><p>x’s are iid</p></li>
+<li><p>x’s are from a continuous (or at least ordinal) distribution</p></li>
+<li><p>Distributions are the same except for a location shift</p></li>
+</ul>
+<section id="by-gender" class="level3">
+<h3 class="anchored" data-anchor-id="by-gender">By gender</h3>
+<p>t-test: <span class="math inline">\(H_0: \mu_M = \mu_F\)</span>, <span class="math inline">\(H_a: \mu_M \neq \mu_F\)</span></p>
+<p>Rank Sum: <span class="math inline">\(F_M(t) = F_F(t \pm \Delta)\)</span>, <span class="math inline">\(H_0: \Delta = 0\)</span>, <span class="math inline">\(H_a: \Delta \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>data_by_gender <span class="ot">=</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Gender <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>))</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_and_test</span>(data_by_gender, <span class="st">"Gender"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  Gender     n   var
+  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;
+1 Female    18 0.978
+2 Male      26 1.42 
+# A tibble: 2 × 3
+  Gender     n   var
+  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;
+1 Female    18 0.978
+2 Male      24 1.55 </code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "###Cleaned Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by Gender
+t = 0.32284, df = 39.828, p-value = 0.7485
+alternative hypothesis: true difference in means between group Female and group Male is not equal to 0
+95 percent confidence interval:
+ -0.585311  0.807811
+sample estimates:
+mean in group Female   mean in group Male 
+            6.916667             6.805417 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by Gender
+W = 202, p-value = 0.7209
+alternative hypothesis: true location shift is not equal to 0
+
+[1] "###Full Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by Gender
+t = 0.34806, df = 40.53, p-value = 0.7296
+alternative hypothesis: true difference in means between group Female and group Male is not equal to 0
+95 percent confidence interval:
+ -0.5521898  0.7820616
+sample estimates:
+mean in group Female   mean in group Male 
+            6.916667             6.801731 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by Gender
+W = 222, p-value = 0.7762
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that males and females have difference average sleep times.</p>
+</section>
+<section id="direction-of-sleep" class="level3">
+<h3 class="anchored" data-anchor-id="direction-of-sleep">Direction of sleep</h3>
+<p>The Kaggle page for the dataset claims southwest is best. Since we only have 4 directions, we will test for south/west vs north/east</p>
+<p>t-test: <span class="math inline">\(H_0: \mu_{SW} = \mu_{NE}\)</span>, <span class="math inline">\(H_a: \mu_{SW} \neq \mu_{NE}\)</span></p>
+<p>Rank Sum: <span class="math inline">\(F_{SW}(t) = F_{NE}(t \pm \Delta)\)</span>, <span class="math inline">\(H_0: \Delta = 0\)</span>, <span class="math inline">\(H_a: \Delta \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>data_direction <span class="ot">=</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">south.or.west=</span>sleep.direction <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"south"</span>,<span class="st">"west"</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>data_direction</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 46 × 12
+     Age Gender meals.day physical.illness screen.time bluelight.filter
+   &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;            &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt;
+ 1    22 Male           2                0         2                  1
+ 2    22 Female         3                0         3.5                0
+ 3    23 Male           3                0         3.5                0
+ 4    23 Female         2                0         1.5                0
+ 5    22 Male           3                0         5.5                1
+ 6    22 Male           2                0         2.5                1
+ 7    22 Male           4                0         1.5                1
+ 8    24 Female         3                1         4.5                0
+ 9    24 Male           4                0         2.5                1
+10    23 Female         3                0         5.5                1
+# ℹ 36 more rows
+# ℹ 6 more variables: sleep.direction &lt;chr&gt;, exercise &lt;chr&gt;, smoke.drink &lt;dbl&gt;,
+#   beverage &lt;chr&gt;, sleep.time &lt;dbl&gt;, south.or.west &lt;lgl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_and_test</span>(data_direction, <span class="st">"south.or.west"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  south.or.west     n   var
+  &lt;lgl&gt;         &lt;int&gt; &lt;dbl&gt;
+1 FALSE            24  2.26
+2 TRUE             22  1.31
+# A tibble: 2 × 3
+  south.or.west     n   var
+  &lt;lgl&gt;         &lt;int&gt; &lt;dbl&gt;
+1 FALSE            24  2.26
+2 TRUE             20  1.45</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "###Cleaned Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by south.or.west
+t = -1.164, df = 41.945, p-value = 0.251
+alternative hypothesis: true difference in means between group FALSE and group TRUE is not equal to 0
+95 percent confidence interval:
+ -1.298084  0.348417
+sample estimates:
+mean in group FALSE  mean in group TRUE 
+           6.541667            7.016500 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by south.or.west
+W = 195, p-value = 0.2761
+alternative hypothesis: true location shift is not equal to 0
+
+[1] "###Full Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by south.or.west
+t = -1.1506, df = 42.642, p-value = 0.2563
+alternative hypothesis: true difference in means between group FALSE and group TRUE is not equal to 0
+95 percent confidence interval:
+ -1.2424660  0.3398902
+sample estimates:
+mean in group FALSE  mean in group TRUE 
+           6.541667            6.992955 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by south.or.west
+W = 223, p-value = 0.3574
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that sleeping facing south/west and facing north/east have difference average sleep times.</p>
+</section>
+<section id="bluelight-filter" class="level3">
+<h3 class="anchored" data-anchor-id="bluelight-filter">Bluelight filter</h3>
+<p>Many people use a bluelight filter on their phone at night. Bluelight from screens is thought to disrupt sleep, whereas using a screen filter that makes a screen have warmer hues is thought to not affect it as much.</p>
+<p>t-test: <span class="math inline">\(H_0: \mu_B = \mu_N\)</span>, <span class="math inline">\(H_a: \mu_B \neq \mu_N\)</span></p>
+<p>Rank Sum: <span class="math inline">\(F_B(t) = F_N(t \pm \Delta)\)</span>, <span class="math inline">\(H_0: \Delta = 0\)</span>, <span class="math inline">\(H_a: \Delta \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_and_test</span>(data, <span class="st">"bluelight.filter"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  bluelight.filter     n   var
+             &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1                0    21  1.58
+2                1    25  2.07
+# A tibble: 2 × 3
+  bluelight.filter     n   var
+             &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1                0    21  1.58
+2                1    23  2.26</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "###Cleaned Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by bluelight.filter
+t = 0.52971, df = 41.701, p-value = 0.5991
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.6202484  1.0616149
+sample estimates:
+mean in group 0 mean in group 1 
+       6.872857        6.652174 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by bluelight.filter
+W = 249.5, p-value = 0.8548
+alternative hypothesis: true location shift is not equal to 0
+
+[1] "###Full Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by bluelight.filter
+t = 0.53365, df = 43.918, p-value = 0.5963
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.589396  1.013910
+sample estimates:
+mean in group 0 mean in group 1 
+       6.872857        6.660600 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by bluelight.filter
+W = 275.5, p-value = 0.7758
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that using a bluelight filter makes a difference in average sleep time.</p>
+</section>
+<section id="physical-illness" class="level3">
+<h3 class="anchored" data-anchor-id="physical-illness">Physical illness</h3>
+<p>t-test: <span class="math inline">\(H_0: \mu_P = \mu_N\)</span>, <span class="math inline">\(H_a: \mu_P \neq \mu_N\)</span></p>
+<p>Rank Sum: <span class="math inline">\(F_P(t) = F_N(t \pm \Delta)\)</span>, <span class="math inline">\(H_0: \Delta = 0\)</span>, <span class="math inline">\(H_a: \Delta \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_and_test</span>(data, <span class="st">"physical.illness"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  physical.illness     n   var
+             &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1                0    42 1.95 
+2                1     4 0.396
+# A tibble: 2 × 3
+  physical.illness     n   var
+             &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1                0    40 2.05 
+2                1     4 0.396</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "###Cleaned Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by physical.illness
+t = -1.0427, df = 6.7804, p-value = 0.3328
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -1.327046  0.518546
+sample estimates:
+mean in group 0 mean in group 1 
+        6.72075         7.12500 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by physical.illness
+W = 71.5, p-value = 0.7345
+alternative hypothesis: true location shift is not equal to 0
+
+[1] "###Full Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by physical.illness
+t = -1.0553, df = 6.3801, p-value = 0.3296
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -1.3224676  0.5174676
+sample estimates:
+mean in group 0 mean in group 1 
+         6.7225          7.1250 
+
+
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by physical.illness
+W = 73.5, p-value = 0.6871
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that a physical illness causes different sleep times.</p>
+</section>
+<section id="smokedrink" class="level3">
+<h3 class="anchored" data-anchor-id="smokedrink">Smoke/drink</h3>
+<p>t-test: <span class="math inline">\(H_0: \mu_{SD} = \mu_N\)</span>, <span class="math inline">\(H_a: \mu_{SD} \neq \mu_N\)</span></p>
+<p>Rank Sum: <span class="math inline">\(F_{SD}(t) = F_N(t \pm \Delta)\)</span>, <span class="math inline">\(H_0: \Delta = 0\)</span>, <span class="math inline">\(H_a: \Delta \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_and_test</span>(data, <span class="st">"smoke.drink"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  smoke.drink     n   var
+        &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1           0    42 1.90 
+2           1     4 0.917
+# A tibble: 2 × 3
+  smoke.drink     n   var
+        &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1           0    40 2.00 
+2           1     4 0.917</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "###Cleaned Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by smoke.drink
+t = -1.0253, df = 4.4369, p-value = 0.3578
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -1.9535685  0.8700685
+sample estimates:
+mean in group 0 mean in group 1 
+        6.70825         7.25000 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in wilcox.test.default(x = DATA[[1L]], y = DATA[[2L]], ...): cannot
+compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by smoke.drink
+W = 62.5, p-value = 0.4712
+alternative hypothesis: true location shift is not equal to 0
+
+[1] "###Full Data###"
+
+    Welch Two Sample t-test
+
+data:  sleep.time by smoke.drink
+t = -1.0295, df = 4.2921, p-value = 0.3577
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -1.9558448  0.8770353
+sample estimates:
+mean in group 0 mean in group 1 
+       6.710595        7.250000 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in wilcox.test.default(x = DATA[[1L]], y = DATA[[2L]], ...): cannot
+compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum test with continuity correction
+
+data:  sleep.time by smoke.drink
+W = 64.5, p-value = 0.4441
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that smoking/drinking makes a difference in average sleep time.</p>
+</section>
+</section>
+<section id="multiple-groups" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-groups">Multiple groups</h2>
+<p>ANOVA assumptions:</p>
+<ul>
+<li><p>All x’s iid</p></li>
+<li><p>x̄_k ~ N(0, σ<sup>2</sup>) for all k</p></li>
+<li><p>Same variances</p></li>
+</ul>
+<p>Kruskal-Wallis assumptions:</p>
+<ul>
+<li><p>x’s are iid</p></li>
+<li><p>x’s are from a continuous (or at least ordinal) distribution</p></li>
+<li><p>Distributions are the same except for a location shift</p></li>
+</ul>
+<section id="beverage" class="level3">
+<h3 class="anchored" data-anchor-id="beverage">Beverage</h3>
+<p>ANOVA: <span class="math inline">\(H_0: \mu_C = \mu_T = \mu_B = \mu_N\)</span>, <span class="math inline">\(H_a: \text{at least one is different}\)</span></p>
+<p>Kruskal-Wallis: <span class="math inline">\(H_0: F_C = F_T = F_B = F_N = F\)</span>, <span class="math inline">\(H_a: \text{at least one distribution is different}\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_and_test</span>(data, <span class="st">"beverage"</span>, <span class="at">groups=</span><span class="dv">4</span>, <span class="at">upper_limit=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  beverage                n   var
+  &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt;
+1 Coffee                  6 6.89 
+2 Tea                    22 0.548
+3 Tea and Coffee both     8 1.41 
+4 none of the above      10 1.43 
+# A tibble: 4 × 3
+  beverage                n   var
+  &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt;
+1 Coffee                  6 6.89 
+2 Tea                    20 0.595
+3 Tea and Coffee both     8 1.41 
+4 none of the above      10 1.43 </code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "###Cleaned Data###"
+
+    One-way analysis of means
+
+data:  sleep.time and beverage
+F = 2.601, num df = 3, denom df = 40, p-value = 0.06535
+
+
+    Kruskal-Wallis rank sum test
+
+data:  sleep.time by beverage
+Kruskal-Wallis chi-squared = 4.6797, df = 3, p-value = 0.1968
+
+[1] "###Full Data###"
+
+    One-way analysis of means
+
+data:  sleep.time and beverage
+F = 2.6791, num df = 3, denom df = 42, p-value = 0.05913
+
+
+    Kruskal-Wallis rank sum test
+
+data:  sleep.time by beverage
+Kruskal-Wallis chi-squared = 4.89, df = 3, p-value = 0.18</code></pre>
+</div>
+</div>
+<p>The ANOVAs are borderline but reject <span class="math inline">\(Ho\)</span>. This is important to note because if we were not doing Kruskal-Wallis, we would note that the data does not look normally distributed. It could be from a normal population, but not all of the data is unimodal (or even bimodal), making me hesitant. Kruskal-Wallis also rejects <span class="math inline">\(Ho\)</span> but more confidently, as the p-values are a bit higher. Based on the distributions of the groups and all group sizes being less than 30, I’d prefer to go with Kruskal-Wallis here.</p>
+</section>
+<section id="exercise" class="level3">
+<h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
+<p>ANOVA: <span class="math inline">\(H_0: \mu_Y = \mu_N = \mu_S\)</span>, <span class="math inline">\(H_a: \text{at least one is different}\)</span></p>
+<p>Kruskal-Wallis: <span class="math inline">\(H_0: F_Y = F_N = F_S = F\)</span>, <span class="math inline">\(H_a: \text{at least one distribution is different}\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_and_test</span>(data, <span class="st">"exercise"</span>, <span class="at">groups=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  exercise      n   var
+  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;
+1 no           11  2.12
+2 sometimes    23  1.08
+3 yes          12  3.34
+# A tibble: 3 × 3
+  exercise      n   var
+  &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;
+1 no           11  2.12
+2 sometimes    21  1.19
+3 yes          12  3.34</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "###Cleaned Data###"
+
+    One-way analysis of means
+
+data:  sleep.time and exercise
+F = 0.032686, num df = 2, denom df = 41, p-value = 0.9679
+
+
+    Kruskal-Wallis rank sum test
+
+data:  sleep.time by exercise
+Kruskal-Wallis chi-squared = 0.56822, df = 2, p-value = 0.7527
+
+[1] "###Full Data###"
+
+    One-way analysis of means
+
+data:  sleep.time and exercise
+F = 0.033382, num df = 2, denom df = 43, p-value = 0.9672
+
+
+    Kruskal-Wallis rank sum test
+
+data:  sleep.time by exercise
+Kruskal-Wallis chi-squared = 0.80614, df = 2, p-value = 0.6683</code></pre>
+</div>
+</div>
+<p>The p-values are all very high. Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that amount of exercise has an impact on sleep time.</p>
+</section>
+</section>
+</section>
+<section id="regression" class="level1">
+<h1>Regression</h1>
+<p>Spearman/Kendall assumptions:</p>
+<ul>
+<li><p>(X<sub>1</sub>,Y<sub>1</sub>) … (X<sub>n</sub>, Y<sub>n</sub>) are a random sample from a continuous bivariate distribution</p></li>
+<li><p>(X,Y) pairs iid</p></li>
+</ul>
+<p>Another function that plots and tests to save some typing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>plot_density_one_group <span class="ot">=</span> <span class="cf">function</span>(df, group, is_filtered, <span class="at">upper_limit=</span><span class="dv">1</span>) {</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  label <span class="ot">=</span> <span class="fu">str_to_title</span>(<span class="fu">str_replace_all</span>(group, <span class="st">"[._]"</span>, <span class="st">" "</span>))</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  title <span class="ot">=</span> <span class="fu">paste0</span>(</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Density by "</span>,</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    label</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  subtitle <span class="ot">=</span> <span class="fu">ifelse</span>(is_filtered, <span class="st">"Removing Non-Rounded Values"</span>, <span class="st">"Full Data"</span>)</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="sc">!!</span><span class="fu">sym</span>(group))) <span class="sc">+</span></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">x=</span>group, <span class="at">y=</span><span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="at">label=</span>title, <span class="at">subtitle=</span>subtitle) <span class="sc">+</span></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,upper_limit,<span class="at">by=</span><span class="fl">0.2</span>), <span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,upper_limit))</span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>correlation <span class="ot">=</span> <span class="cf">function</span>(df, group, <span class="at">x_scale=</span><span class="cn">NULL</span>) {</span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>  cleaned_df <span class="ot">=</span> <span class="fu">filter_data</span>(df)</span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"##Cleaned Data##"</span>)</span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">cor.test</span>(cleaned_df[[group]], cleaned_df<span class="sc">$</span>sleep.time))</span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">cor.test</span>(cleaned_df[[group]], cleaned_df<span class="sc">$</span>sleep.time, <span class="at">method=</span><span class="st">"spearman"</span>))</span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">cor.test</span>(cleaned_df[[group]], cleaned_df<span class="sc">$</span>sleep.time, <span class="at">method=</span><span class="st">"kendall"</span>))</span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"##Full Data##"</span>)</span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">cor.test</span>(df[[group]], df<span class="sc">$</span>sleep.time))</span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">cor.test</span>(df[[group]], df<span class="sc">$</span>sleep.time, <span class="at">method=</span><span class="st">"spearman"</span>))</span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">cor.test</span>(df[[group]], df<span class="sc">$</span>sleep.time, <span class="at">method=</span><span class="st">"kendall"</span>))</span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a>  title_reg <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">str_to_title</span>(<span class="fu">str_replace_all</span>(group, <span class="st">"[._]"</span>, <span class="st">" "</span>)), <span class="st">" vs. Sleep Time"</span>)</span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a>  plot1 <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb56-32"><a href="#cb56-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="sc">!!</span><span class="fu">sym</span>(group), <span class="at">y=</span>sleep.time)) <span class="sc">+</span></span>
+<span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="sc">!!</span><span class="fu">sym</span>(group), <span class="at">y=</span>sleep.time),<span class="at">method=</span><span class="st">"lm"</span>,<span class="at">se=</span>F) <span class="sc">+</span></span>
+<span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="at">label=</span>title_reg, <span class="at">subtitle=</span><span class="st">"Full Data"</span>)</span>
+<span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a>  plot2 <span class="ot">=</span> cleaned_df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb56-37"><a href="#cb56-37" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="sc">!!</span><span class="fu">sym</span>(group), <span class="at">y=</span>sleep.time)) <span class="sc">+</span></span>
+<span id="cb56-38"><a href="#cb56-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="sc">!!</span><span class="fu">sym</span>(group), <span class="at">y=</span>sleep.time),<span class="at">method=</span><span class="st">"lm"</span>,<span class="at">se=</span>F) <span class="sc">+</span></span>
+<span id="cb56-39"><a href="#cb56-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="at">label=</span>title_reg, <span class="at">subtitle=</span><span class="st">"Removing Non-Rounded Values"</span>)</span>
+<span id="cb56-40"><a href="#cb56-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(x_scale)) {</span>
+<span id="cb56-41"><a href="#cb56-41" aria-hidden="true" tabindex="-1"></a>    plot1 <span class="ot">=</span> plot1 <span class="sc">+</span> x_scale</span>
+<span id="cb56-42"><a href="#cb56-42" aria-hidden="true" tabindex="-1"></a>    plot2 <span class="ot">=</span> plot2 <span class="sc">+</span> x_scale</span>
+<span id="cb56-43"><a href="#cb56-43" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-44"><a href="#cb56-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(plot1)</span>
+<span id="cb56-45"><a href="#cb56-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(plot2)</span>
+<span id="cb56-46"><a href="#cb56-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">plot_density_one_group</span>(cleaned_df, group, T))</span>
+<span id="cb56-47"><a href="#cb56-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">plot_density_one_group</span>(df, group, F))</span>
+<span id="cb56-48"><a href="#cb56-48" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="age" class="level3">
+<h3 class="anchored" data-anchor-id="age">Age</h3>
+<p><span class="math inline">\(H_0: (\text{cor}/\rho/\tau)_A = 0\)</span>, <span class="math inline">\(H_a: (\text{cor}/\rho/\tau)_A \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">correlation</span>(data, <span class="st">"Age"</span>, <span class="at">x_scale =</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">20</span>, <span class="dv">60</span>, <span class="at">by=</span><span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "##Cleaned Data##"
+
+    Pearson's product-moment correlation
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+t = -0.12001, df = 42, p-value = 0.905
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3136709  0.2799042
+sample estimates:
+       cor 
+-0.0185147 
+
+
+    Spearman's rank correlation rho
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+S = 14298, p-value = 0.961
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+         rho 
+-0.007598755 
+
+
+    Kendall's rank correlation tau
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+z = -0.010893, p-value = 0.9913
+alternative hypothesis: true tau is not equal to 0
+sample estimates:
+         tau 
+-0.001342403 
+
+[1] "##Full Data##"
+
+    Pearson's product-moment correlation
+
+data:  df[[group]] and df$sleep.time
+t = -0.12239, df = 44, p-value = 0.9031
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3071015  0.2733137
+sample estimates:
+        cor 
+-0.01844807 
+
+
+    Spearman's rank correlation rho
+
+data:  df[[group]] and df$sleep.time
+S = 15879, p-value = 0.8914
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+       rho 
+0.02070441 
+
+
+    Kendall's rank correlation tau
+
+data:  df[[group]] and df$sleep.time
+z = 0.19272, p-value = 0.8472
+alternative hypothesis: true tau is not equal to 0
+sample estimates:
+       tau 
+0.02308627 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-17-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-17-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>All tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that sleep time is influenced by age.</p>
+</section>
+<section id="screen-time" class="level3">
+<h3 class="anchored" data-anchor-id="screen-time">Screen time</h3>
+<p><span class="math inline">\(H_0: (\text{cor/}\rho/\tau)_{ST} = 0\)</span>, <span class="math inline">\(H_a: (\text{cor}/\rho/\tau)_{ST} \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">correlation</span>(data, <span class="st">"screen.time"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "##Cleaned Data##"
+
+    Pearson's product-moment correlation
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+t = -0.63827, df = 42, p-value = 0.5268
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3837271  0.2048280
+sample estimates:
+        cor 
+-0.09801241 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(cleaned_df[[group]], cleaned_df$sleep.time, :
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Spearman's rank correlation rho
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+S = 14337, p-value = 0.9467
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+        rho 
+-0.01038147 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(cleaned_df[[group]], cleaned_df$sleep.time, :
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kendall's rank correlation tau
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+z = -0.087022, p-value = 0.9307
+alternative hypothesis: true tau is not equal to 0
+sample estimates:
+        tau 
+-0.01075347 
+
+[1] "##Full Data##"
+
+    Pearson's product-moment correlation
+
+data:  df[[group]] and df$sleep.time
+t = -0.64024, df = 44, p-value = 0.5253
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.3758884  0.1997965
+sample estimates:
+        cor 
+-0.09607386 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(df[[group]], df$sleep.time, method = "spearman"):
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Spearman's rank correlation rho
+
+data:  df[[group]] and df$sleep.time
+S = 15730, p-value = 0.8435
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+       rho 
+0.02992394 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(df[[group]], df$sleep.time, method = "kendall"):
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kendall's rank correlation tau
+
+data:  df[[group]] and df$sleep.time
+z = 0.17169, p-value = 0.8637
+alternative hypothesis: true tau is not equal to 0
+sample estimates:
+       tau 
+0.02050717 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-18-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-18-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>All tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that sleep time is influenced by screen time.</p>
+</section>
+<section id="meals-per-day" class="level3">
+<h3 class="anchored" data-anchor-id="meals-per-day">Meals per day</h3>
+<p><span class="math inline">\(H_0: (\text{cor/}\rho/\tau)_{M} = 0\)</span>, <span class="math inline">\(H_a: (\text{cor}/\rho/\tau)_M \neq 0\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">correlation</span>(data, <span class="st">"meals.day"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "##Cleaned Data##"
+
+    Pearson's product-moment correlation
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+t = -2.402, df = 42, p-value = 0.02081
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.58414008 -0.05647421
+sample estimates:
+       cor 
+-0.3475279 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(cleaned_df[[group]], cleaned_df$sleep.time, :
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Spearman's rank correlation rho
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+S = 16721, p-value = 0.2467
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+-0.178358 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(cleaned_df[[group]], cleaned_df$sleep.time, :
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kendall's rank correlation tau
+
+data:  cleaned_df[[group]] and cleaned_df$sleep.time
+z = -1.2066, p-value = 0.2276
+alternative hypothesis: true tau is not equal to 0
+sample estimates:
+       tau 
+-0.1557942 
+
+[1] "##Full Data##"
+
+    Pearson's product-moment correlation
+
+data:  df[[group]] and df$sleep.time
+t = -2.4227, df = 44, p-value = 0.01959
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.57600620 -0.05861451
+sample estimates:
+       cor 
+-0.3430749 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(df[[group]], df$sleep.time, method = "spearman"):
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Spearman's rank correlation rho
+
+data:  df[[group]] and df$sleep.time
+S = 18638, p-value = 0.3217
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+       rho 
+-0.1494071 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(df[[group]], df$sleep.time, method = "kendall"):
+Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kendall's rank correlation tau
+
+data:  df[[group]] and df$sleep.time
+z = -1.0347, p-value = 0.3008
+alternative hypothesis: true tau is not equal to 0
+sample estimates:
+       tau 
+-0.1298545 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Project_files/figure-html/unnamed-chunk-19-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Pearson’s rejects, but Spearman’s/Kendall’s do not. Based on distribution and outliers, I may be more confident going with non-parametric. Based on that, we would not reject <span class="math inline">\(H_0\)</span>.</p>
+</section>
+</section>
+<section id="bootstrapping" class="level1">
+<h1>Bootstrapping</h1>
+<section id="one-sample---sleep-time" class="level2">
+<h2 class="anchored" data-anchor-id="one-sample---sleep-time">One sample - sleep time</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Made a function so code would be together and output would be together when knitted,</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="co"># rather than broken up by print statement</span></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>make_cis <span class="ot">=</span> <span class="cf">function</span>() {</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Parametric"</span>)</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"##Cleaned Data##"</span>)</span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">t.test</span>(data_cleaned<span class="sc">$</span>sleep.time,<span class="at">conf.level =</span> <span class="fl">0.95</span>)<span class="sc">$</span>conf.int)</span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"##Full Data##"</span>)</span>
+<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">t.test</span>(data<span class="sc">$</span>sleep.time,<span class="at">conf.level =</span> <span class="fl">0.95</span>)<span class="sc">$</span>conf.int)</span>
+<span id="cb85-9"><a href="#cb85-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb85-10"><a href="#cb85-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Bootstrapped"</span>)</span>
+<span id="cb85-11"><a href="#cb85-11" aria-hidden="true" tabindex="-1"></a>  boot_mean <span class="ot">=</span> <span class="cf">function</span>(v, index) <span class="fu">mean</span>(v[index])</span>
+<span id="cb85-12"><a href="#cb85-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(r <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">10000</span>, <span class="dv">100000</span>)) {</span>
+<span id="cb85-13"><a href="#cb85-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">20231217</span>)</span>
+<span id="cb85-14"><a href="#cb85-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"##Cleaned##"</span>)</span>
+<span id="cb85-15"><a href="#cb85-15" aria-hidden="true" tabindex="-1"></a>    sleep_boot <span class="ot">=</span> <span class="fu">boot</span>(data_cleaned<span class="sc">$</span>sleep.time, <span class="at">statistic=</span>boot_mean, <span class="at">R=</span>r)</span>
+<span id="cb85-16"><a href="#cb85-16" aria-hidden="true" tabindex="-1"></a>    sleep_boot_ci<span class="ot">=</span><span class="fu">boot.ci</span>(sleep_boot, <span class="at">conf =</span> <span class="fl">0.95</span>)</span>
+<span id="cb85-17"><a href="#cb85-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(sleep_boot_ci)</span>
+<span id="cb85-18"><a href="#cb85-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb85-19"><a href="#cb85-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">20231217</span>)</span>
+<span id="cb85-20"><a href="#cb85-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">"##Full##"</span>)</span>
+<span id="cb85-21"><a href="#cb85-21" aria-hidden="true" tabindex="-1"></a>    sleep_boot <span class="ot">=</span> <span class="fu">boot</span>(data<span class="sc">$</span>sleep.time, <span class="at">statistic=</span>boot_mean, <span class="at">R=</span>r)</span>
+<span id="cb85-22"><a href="#cb85-22" aria-hidden="true" tabindex="-1"></a>    sleep_boot_ci<span class="ot">=</span><span class="fu">boot.ci</span>(sleep_boot, <span class="at">conf =</span> <span class="fl">0.95</span>)</span>
+<span id="cb85-23"><a href="#cb85-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(sleep_boot_ci)</span>
+<span id="cb85-24"><a href="#cb85-24" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb85-25"><a href="#cb85-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb85-26"><a href="#cb85-26" aria-hidden="true" tabindex="-1"></a><span class="fu">make_cis</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Parametric"
+[1] "##Cleaned Data##"
+[1] 6.337962 7.177038
+attr(,"conf.level")
+[1] 0.95
+[1] "##Full Data##"
+[1] 6.35692 7.15808
+attr(,"conf.level")
+[1] 0.95
+[1] "Bootstrapped"
+[1] "##Cleaned##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.331,  7.151 )   ( 6.374,  7.181 )  
+
+Level     Percentile            BCa          
+95%   ( 6.334,  7.141 )   ( 6.185,  7.127 )  
+Calculations and Intervals on Original Scale
+Some basic intervals may be unstable
+Some percentile intervals may be unstable
+Some BCa intervals may be unstable
+[1] "##Full##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in norm.inter(t, adj.alpha): extreme order statistics used as endpoints</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.384,  7.105 )   ( 6.434,  7.102 )  
+
+Level     Percentile            BCa          
+95%   ( 6.413,  7.081 )   ( 6.284,  7.040 )  
+Calculations and Intervals on Original Scale
+Some basic intervals may be unstable
+Some percentile intervals may be unstable
+Warning : BCa Intervals used Extreme Quantiles
+Some BCa intervals may be unstable
+[1] "##Cleaned##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 1000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.329,  7.181 )   ( 6.367,  7.208 )  
+
+Level     Percentile            BCa          
+95%   ( 6.307,  7.148 )   ( 6.216,  7.106 )  
+Calculations and Intervals on Original Scale
+[1] "##Full##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 1000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.369,  7.145 )   ( 6.417,  7.181 )  
+
+Level     Percentile            BCa          
+95%   ( 6.334,  7.098 )   ( 6.256,  7.076 )  
+Calculations and Intervals on Original Scale
+[1] "##Cleaned##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 10000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.352,  7.161 )   ( 6.379,  7.189 )  
+
+Level     Percentile            BCa          
+95%   ( 6.326,  7.136 )   ( 6.246,  7.088 )  
+Calculations and Intervals on Original Scale
+[1] "##Full##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 10000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.372,  7.143 )   ( 6.395,  7.158 )  
+
+Level     Percentile            BCa          
+95%   ( 6.357,  7.120 )   ( 6.299,  7.087 )  
+Calculations and Intervals on Original Scale
+[1] "##Cleaned##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.355,  7.160 )   ( 6.379,  7.182 )  
+
+Level     Percentile            BCa          
+95%   ( 6.333,  7.136 )   ( 6.258,  7.091 )  
+Calculations and Intervals on Original Scale
+[1] "##Full##"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in boot.ci(sleep_boot, conf = 0.95): bootstrap variances needed for
+studentized intervals</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 100000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = sleep_boot, conf = 0.95)
+
+Intervals : 
+Level      Normal              Basic         
+95%   ( 6.373,  7.142 )   ( 6.395,  7.165 )  
+
+Level     Percentile            BCa          
+95%   ( 6.350,  7.120 )   ( 6.285,  7.078 )  
+Calculations and Intervals on Original Scale</code></pre>
+</div>
+</div>
+<p>In all cases, our mean and median are contained within the confidence intervals.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<section id="technical-challenges" class="level2">
+<h2 class="anchored" data-anchor-id="technical-challenges">Technical Challenges</h2>
+<p>I wanted to write functions for each type of test (2-sample, multiple groups, regression) that would create all the plots and run all the tests to save some typing and duplication of code. As you can see, I did get them to work, but it required a lot more time and effort than I expected. It probably would’ve been less typing and time in the end to duplicate all the code, but I am glad I got the functions to work in the end.</p>
+</section>
+<section id="possible-expansions" class="level2">
+<h2 class="anchored" data-anchor-id="possible-expansions">Possible expansions</h2>
+<p>I would be interested in looking into other tests I could perform (in particular, tests on variances, or test for normality).</p>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>Most of the variables seemed to not have much effect on overall sleep time. This was a bit surprising to me, as I would’ve expected bluelight filter, for example to have an impact. It would be interesting to see more data and see if more of a difference would come out. I would also be interested in seeing data for times people go to sleep/wake up, as maybe bluelight has more of an effect on the time you fall asleep than how long you sleep for.</p>
+<p>Based on distribution shapes and group sizes, non-parametric may be better, but both parametric and non-parametric gave the same decisions (except for meals/day), so either choice would be appropriate in the majority of cases.</p>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<p>https://www.kaggle.com/datasets/krupa1999/sleep-pattern</p>
+<p>https://sixsigmastudyguide.com/f-distributionf-statistic-f-test/</p>
+<p>https://dzchilds.github.io/stats-for-bio/two-sample-t-test.html</p>
+<p>Hollander, Myles, et al.&nbsp;<em>Nonparametric Statistical Methods</em>, John Wiley &amp; Sons, Incorporated, 2013. <em>ProQuest Ebook Central</em>, https://ebookcentral.proquest.com/lib/villanova-ebooks/detail.action?docID=1550549.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

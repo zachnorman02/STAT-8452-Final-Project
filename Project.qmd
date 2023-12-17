@@ -1,14 +1,42 @@
 ---
 title: "Final Project"
-format: pdf
+format: html
 editor: visual
 ---
 
 ```{r setup, include=F}
 library(tidyverse)
 library(patchwork)
+library(boot)
+library(stringr)
+library(DescTools)
 ```
 
+# Overview
+
+[The dataset is from Kaggle](https://www.kaggle.com/datasets/krupa1999/sleep-pattern) and contains 46 rows. The data came from a survey about sleep. It includes quantitative (ordinal and continuous) and categorical variables, as well as small groups within each variable, making it well-suited for a wide variety parametric and non-parametric tests. Columns include:
+
+-   Age
+
+-   Gender
+
+-   Meals per day
+
+-   Whether they have a physical illness (yes/no)
+
+-   Amount of screen time each day (0-1 hrs, 1-2 hrs, etc)
+
+-   Whether they use bluelight filters (yes/no) \* What direction they sleep in (north, south, east, west)
+
+-   Whether they exercise (yes, no sometimes)
+
+-   Whether they smoke or drink (yes/no)
+
+-   Preferred beverage (coffee, tea, neither, both)
+
+-   Amount of sleep each night (in hrs)
+
+The goal is to see which variables, if any, influence length of sleep.
 
 ```{r, message=FALSE}
 data = read_csv("Sleep_Analysis.csv")
@@ -16,7 +44,8 @@ dim(data)
 names(data)
 head(data)
 ```
-There are a couple of rows that appear to be close-duplicates (only difference is sleep time: one is 2 hours (the only non-binned value), and the other is 2-3 hours (which includes the non-binned value)). In addition, they both have sleep duration values of 6.7575, a strange value-- which also equals the sample mean of the dataset. Therefore, I have decided to exclude these 2 rows in my analysis.
+
+There are a couple of rows that appear to be close-duplicates (only difference is sleep time: one is 2 hours (the only non-binned value), and the other is 2-3 hours (which includes the non-binned value)). In addition, they both have sleep duration values of 6.7575, a strange value-- which also equals the sample mean of the dataset. I have decided to do my analyses both with these 2 rows and excluding these 2 rows, to see what impact they may have.
 
 ```{r}
 colnames(data) = make.names(colnames(data))
@@ -47,6 +76,8 @@ data = data %>%
   )
 ```
 
+Making the filtered dataset:
+
 ```{r}
 filter_data = function(df) {
   df %>% dplyr::filter(round(sleep.time,4) != 6.7575)
@@ -55,97 +86,429 @@ data_cleaned = filter_data(data)
 data_cleaned
 ```
 
+# Plot/Test Function
+
+Less typing overall. Creates the plots and runs the tests.
+
 ```{r}
-plot_density = function(df, group, is_filtered) {
+plot_density = function(df, group, is_filtered, upper_limit=1) {
+  label = str_to_title(str_replace_all(group, "[._]", " "))
   title = paste0(
     "Density by ",
-    str_to_title(group)
+    label
   )
   subtitle = ifelse(is_filtered, "Removing Non-Rounded Values", "Full Data")
+  
+  if(!is.factor(df[[group]]) && !is.character(df[[group]])) {
+    df[[group]] = factor(df[[group]])
+  }
+  
   return(
     df %>% 
       ggplot() +
-        geom_density(aes_string(x="sleep.time",color=group)) +
-        labs(x="Sleep Duration", y="Density") +
-        ggtitle(label=title, subtitle=subtitle)
+        geom_density(aes(x=sleep.time,color=!!sym(group))) +
+        labs(x="Sleep Duration", y="Density", color=label) +
+        ggtitle(label=title, subtitle=subtitle) +
+        scale_y_continuous(breaks=seq(0,upper_limit,by=0.2), limits=c(0,upper_limit))
   )
 }
 
-plot_and_test = function(df, group) {
+plot_and_test = function(df, group, groups=2, upper_limit=1) {
   cleaned_df = filter_data(df)
   
-  plots = list()
-  plots$orig = plot_density(df, group, F)
-  plots$clean = plot_density(cleaned_df, group, T)
-  print(
-    plots$orig + 
-      plots$clean + 
-      plot_layout(ncol = 2, nrow = 1)
-  )
+  print(df %>% group_by(!!sym(group)) %>% summarize(n=n(),var=var(sleep.time)))
+  print(cleaned_df %>% group_by(!!sym(group)) %>% summarize(n=n(),var=var(sleep.time)))
+  
+  orig_plot = plot_density(df, group, F, upper_limit)
+  clean_plot = plot_density(cleaned_df, group, T, upper_limit)
+  print(orig_plot)
+  print(clean_plot)
   
   formula_string = paste0("sleep.time~", group)
   formula = as.formula(formula_string)
-  print("###Cleaned Data###")
-  print(t.test(formula, data=cleaned_df))
-  print(wilcox.test(formula, data=df))
-  print("###Full Data###")
-  print(t.test(formula, data=df))
-  print(wilcox.test(formula, data=df))
+  if (groups==2) {
+    print("###Cleaned Data###")
+    print(t.test(formula, data=cleaned_df))
+    print(wilcox.test(formula, data=cleaned_df))
+    print("###Full Data###")
+    print(t.test(formula, data=df))
+    print(wilcox.test(formula, data=df))
+  } else {
+    print("###Cleaned Data###")
+    print(oneway.test(formula,data=cleaned_df,var.equal=T))
+    print(kruskal.test(formula,data=cleaned_df))
+    print("###Full Data###")
+    print(oneway.test(formula,data=df,var.equal=T))
+    print(kruskal.test(formula,data=df))
+  }
 }
 ```
 
-
 # Mean Sleep Duration
+
+## One group:
+
+t-test assumptions:
+
+-   X's are independent
+
+-   Data is from a normal distribution
+
+-   Data is continuous
+
+Sign Test assumptions: x's are iid and are from a continuous (or at least ordinal) distribution
+
+Here, I am testing for if the mean/median are 7, since that is the recommended minimum amoung of sleep for adults.
+
+Parametric: $H_0: \mu = 7$, $H_a: \mu \neq 7$
+
+Non-parametric: $H_0: \theta_{0.5} = 7$, $H_a: \theta_{0.5} \neq 7$
 
 ```{r}
 ggplot() +
   geom_density(data=data,aes(x=sleep.time, color="data")) +
-  geom_density(data=data_cleaned,aes(x=sleep.time, color="data_cleaned"))
+  geom_density(data=data_cleaned,aes(x=sleep.time, color="data_cleaned")) +
+  scale_x_continuous(breaks=seq(0,10,by=2)) +
+  labs(title="Sleep Time Density (Cleaned and Full)", color="Data")
 ```
 
-## Cleaned
+### Cleaned
+
 ```{r}
 # parametric
-med=median(data_cleaned$sleep.time)
-t.test(data_cleaned$sleep.time, mu=med)
+t.test(data_cleaned$sleep.time, mu=7)
 
 # non-parametric (sign test)
-above = data_cleaned %>% 
-  mutate(sign = sleep.time > med) %>% 
-  filter(sign == 1) %>% 
-  nrow()
-binom.test(above,data_cleaned %>% nrow(),0.5)
+# Note: originally did this by manually finding how many are above the median
+# and doing binom.test, but I got an absurdly small value that did not make sense
+# I looked at 2 packages with sign test functions and they both gave me the same
+# p-value, and have the same S value I came up with, so I probably did something
+# wrong, but decided to go with the package test since that made more sense
+SignTest(data_cleaned$sleep.time,mu=7)
 ```
-# Non-cleaned
+
+Both tests do not reject $H_0$, there is not enough evidence to suggest the mean/median is not 7.
+
+### Non cleaned
+
 ```{r}
 # parametric
-med=median(data$sleep.time)
-t.test(data_cleaned$sleep.time, mu=med)
+t.test(data$sleep.time, mu=7)
 
 # non-parametric (sign test)
-above = data %>% 
-  mutate(sign = sleep.time > med) %>% 
-  filter(sign == 1) %>% 
-  nrow()
-binom.test(above,data %>% nrow(),0.5)
+SignTest(data$sleep.time,mu=7)
 ```
 
-# Compare male/female
+Both tests do not reject $H_0$, there is not enough evidence to suggest the mean/median is not 7.
+
+### Variances
+
+F-test assumptions:
+
+-   Both distributions are normally distributed
+
+-   Populations are independent
+
+Ansari-Bradley assumptions:
+
+-   Observations are from an continuous/ordinal distribution
+
+-   Observations are iid
+
+-   Groups are mutually independent
+
+-   Medians are equal
+
+F-test: $H_0: \sigma_F = \sigma_C$, $H_a: \sigma_F \neq \sigma_C$
+
+Ansari-Bradley: $F_F(x) = F_C(\frac{x-\theta}{\eta})$ $H_0: \eta = 1$, $H_a: \eta \neq 1$
+
 ```{r}
+var(data$sleep.time)
+var(data_cleaned$sleep.time)
+var.test(data$sleep.time, data_cleaned$sleep.time)
+ansari.test(data$sleep.time, data_cleaned$sleep.time)
+```
+
+## Two groups
+
+2-sample t-test assumptions:
+
+-   Data is continuous and from a normal distribution
+
+-   Groups are independent
+
+Rank Sum assumptions:
+
+-   x's are iid
+
+-   x's are from a continuous (or at least ordinal) distribution
+
+-   Distributions are the same except for a location shift
+
+### By gender
+
+t-test: $H_0: \mu_M = \mu_F$, $H_a: \mu_M \neq \mu_F$
+
+Rank Sum: $F_M(t) = F_F(t \pm \Delta)$, $H_0: \Delta = 0$, $H_a: \Delta \neq 0$
+
+```{r, warning=F}
 data_by_gender = data %>% 
   dplyr::filter(Gender %in% c("Male", "Female"))
 
 plot_and_test(data_by_gender, "Gender")
 ```
-## Direction of sleep
-Data claims southwest is best. As we only have 4 directions, we will test for south/west vs north/east
-```{r}
+
+Both tests do not reject $H_0$, there is not enough evidence to suggest that males and females have difference average sleep times.
+
+### Direction of sleep
+
+The Kaggle page for the dataset claims southwest is best. Since we only have 4 directions, we will test for south/west vs north/east
+
+t-test: $H_0: \mu_{SW} = \mu_{NE}$, $H_a: \mu_{SW} \neq \mu_{NE}$
+
+Rank Sum: $F_{SW}(t) = F_{NE}(t \pm \Delta)$, $H_0: \Delta = 0$, $H_a: \Delta \neq 0$
+
+```{r, warning=F}
 data_direction = data %>% 
   mutate(
-    south_west=sleep.direction %in% c("south","west")
+    south.or.west=sleep.direction %in% c("south","west")
   )
 data_direction
 
-plot_and_test(data_direction, "south_west")
+plot_and_test(data_direction, "south.or.west")
 ```
 
+Both tests do not reject $H_0$, there is not enough evidence to suggest that sleeping facing south/west and facing north/east have difference average sleep times.
+
+### Bluelight filter
+
+Many people use a bluelight filter on their phone at night. Bluelight from screens is thought to disrupt sleep, whereas using a screen filter that makes a screen have warmer hues is thought to not affect it as much.
+
+t-test: $H_0: \mu_B = \mu_N$, $H_a: \mu_B \neq \mu_N$
+
+Rank Sum: $F_B(t) = F_N(t \pm \Delta)$, $H_0: \Delta = 0$, $H_a: \Delta \neq 0$
+
+```{r, warning=F}
+plot_and_test(data, "bluelight.filter")
+```
+
+Both tests do not reject $H_0$, there is not enough evidence to suggest that using a bluelight filter makes a difference in average sleep time.
+
+### Physical illness
+
+t-test: $H_0: \mu_P = \mu_N$, $H_a: \mu_P \neq \mu_N$
+
+Rank Sum: $F_P(t) = F_N(t \pm \Delta)$, $H_0: \Delta = 0$, $H_a: \Delta \neq 0$
+
+```{r, warning=F}
+plot_and_test(data, "physical.illness")
+```
+
+Both tests do not reject $H_0$, there is not enough evidence to suggest that a physical illness causes different sleep times.
+
+### Smoke/drink
+
+t-test: $H_0: \mu_{SD} = \mu_N$, $H_a: \mu_{SD} \neq \mu_N$
+
+Rank Sum: $F_{SD}(t) = F_N(t \pm \Delta)$, $H_0: \Delta = 0$, $H_a: \Delta \neq 0$
+
+```{r}
+plot_and_test(data, "smoke.drink")
+```
+
+Both tests do not reject $H_0$, there is not enough evidence to suggest that smoking/drinking makes a difference in average sleep time.
+
+## Multiple groups
+
+ANOVA assumptions:
+
+-   All x's iid
+
+-   x̄\_k \~ N(0, σ^2^) for all k
+
+-   Same variances
+
+Kruskal-Wallis assumptions:
+
+-   x's are iid
+
+-   x's are from a continuous (or at least ordinal) distribution
+
+-   Distributions are the same except for a location shift
+
+### Beverage
+
+ANOVA: $H_0: \mu_C = \mu_T = \mu_B = \mu_N$, $H_a: \text{at least one is different}$
+
+Kruskal-Wallis: $H_0: F_C = F_T = F_B = F_N = F$, $H_a: \text{at least one distribution is different}$
+
+```{r}
+plot_and_test(data, "beverage", groups=4, upper_limit=2)
+```
+
+The ANOVAs are borderline but reject $Ho$. This is important to note because if we were not doing Kruskal-Wallis, we would note that the data does not look normally distributed. It could be from a normal population, but not all of the data is unimodal (or even bimodal), making me hesitant. Kruskal-Wallis also rejects $Ho$ but more confidently, as the p-values are a bit higher. Based on the distributions of the groups and all group sizes being less than 30, I'd prefer to go with Kruskal-Wallis here.
+
+### Exercise
+
+ANOVA: $H_0: \mu_Y = \mu_N = \mu_S$, $H_a: \text{at least one is different}$
+
+Kruskal-Wallis: $H_0: F_Y = F_N = F_S = F$, $H_a: \text{at least one distribution is different}$
+
+```{r}
+plot_and_test(data, "exercise", groups=3)
+```
+
+The p-values are all very high. Both tests do not reject $H_0$, there is not enough evidence to suggest that amount of exercise has an impact on sleep time.
+
+# Regression
+
+Spearman/Kendall assumptions:
+
+-   (X~1~,Y~1~) ... (X~n~, Y~n~) are a random sample from a continuous bivariate distribution
+
+-   (X,Y) pairs iid
+
+Another function that plots and tests to save some typing.
+
+```{r}
+plot_density_one_group = function(df, group, is_filtered, upper_limit=1) {
+  label = str_to_title(str_replace_all(group, "[._]", " "))
+  title = paste0(
+    "Density by ",
+    label
+  )
+  subtitle = ifelse(is_filtered, "Removing Non-Rounded Values", "Full Data")
+  
+  return(
+    df %>% 
+      ggplot() +
+        geom_density(aes(x=!!sym(group))) +
+        labs(x=group, y="Density") +
+        ggtitle(label=title, subtitle=subtitle) +
+        scale_y_continuous(breaks=seq(0,upper_limit,by=0.2), limits=c(0,upper_limit))
+  )
+}
+
+correlation = function(df, group, x_scale=NULL) {
+  cleaned_df = filter_data(df)
+  print("##Cleaned Data##")
+  print(cor.test(cleaned_df[[group]], cleaned_df$sleep.time))
+  print(cor.test(cleaned_df[[group]], cleaned_df$sleep.time, method="spearman"))
+  print(cor.test(cleaned_df[[group]], cleaned_df$sleep.time, method="kendall"))
+  print("##Full Data##")
+  print(cor.test(df[[group]], df$sleep.time))
+  print(cor.test(df[[group]], df$sleep.time, method="spearman"))
+  print(cor.test(df[[group]], df$sleep.time, method="kendall"))
+  title_reg = paste0(str_to_title(str_replace_all(group, "[._]", " ")), " vs. Sleep Time")
+  plot1 = df %>% 
+      ggplot() +
+        geom_point(aes(x=!!sym(group), y=sleep.time)) +
+        geom_smooth(aes(x=!!sym(group), y=sleep.time),method="lm",se=F) +
+        ggtitle(label=title_reg, subtitle="Full Data")
+  plot2 = cleaned_df %>% 
+      ggplot() +
+        geom_point(aes(x=!!sym(group), y=sleep.time)) +
+        geom_smooth(aes(x=!!sym(group), y=sleep.time),method="lm",se=F) +
+        ggtitle(label=title_reg, subtitle="Removing Non-Rounded Values")
+  if(!is.null(x_scale)) {
+    plot1 = plot1 + x_scale
+    plot2 = plot2 + x_scale
+  }
+  print(plot1)
+  print(plot2)
+  print(plot_density_one_group(cleaned_df, group, T))
+  print(plot_density_one_group(df, group, F))
+}
+```
+
+### Age
+
+$H_0: (\text{cor}/\rho/\tau)_A = 0$, $H_a: (\text{cor}/\rho/\tau)_A \neq 0$
+
+```{r, warning=F}
+correlation(data, "Age", x_scale = scale_x_continuous(breaks=seq(20, 60, by=5)))
+```
+
+All tests do not reject $H_0$, there is not enough evidence to suggest that sleep time is influenced by age.
+
+### Screen time
+
+$H_0: (\text{cor/}\rho/\tau)_{ST} = 0$, $H_a: (\text{cor}/\rho/\tau)_{ST} \neq 0$
+
+```{r}
+correlation(data, "screen.time")
+```
+
+All tests do not reject $H_0$, there is not enough evidence to suggest that sleep time is influenced by screen time.
+
+### Meals per day
+
+$H_0: (\text{cor/}\rho/\tau)_{M} = 0$, $H_a: (\text{cor}/\rho/\tau)_M \neq 0$
+
+```{r}
+correlation(data, "meals.day")
+```
+
+Pearson's rejects, but Spearman's/Kendall's do not. Based on distribution and outliers, I may be more confident going with non-parametric. Based on that, we would not reject $H_0$.
+
+# Bootstrapping
+
+## One sample - sleep time
+
+```{r}
+# Made a function so code would be together and output would be together when knitted,
+# rather than broken up by print statement
+make_cis = function() {
+  print("Parametric")
+  print("##Cleaned Data##")
+  print(t.test(data_cleaned$sleep.time,conf.level = 0.95)$conf.int)
+  print("##Full Data##")
+  print(t.test(data$sleep.time,conf.level = 0.95)$conf.int)
+  
+  print("Bootstrapped")
+  boot_mean = function(v, index) mean(v[index])
+  for(r in c(100, 1000, 10000, 100000)) {
+    set.seed(20231217)
+    print("##Cleaned##")
+    sleep_boot = boot(data_cleaned$sleep.time, statistic=boot_mean, R=r)
+    sleep_boot_ci=boot.ci(sleep_boot, conf = 0.95)
+    print(sleep_boot_ci)
+    
+    set.seed(20231217)
+    print("##Full##")
+    sleep_boot = boot(data$sleep.time, statistic=boot_mean, R=r)
+    sleep_boot_ci=boot.ci(sleep_boot, conf = 0.95)
+    print(sleep_boot_ci)
+  }
+}
+make_cis()
+```
+
+In all cases, our mean and median are contained within the confidence intervals.
+
+# Conclusion
+
+## Technical Challenges
+
+I wanted to write functions for each type of test (2-sample, multiple groups, regression) that would create all the plots and run all the tests to save some typing and duplication of code. As you can see, I did get them to work, but it required a lot more time and effort than I expected. It probably would've been less typing and time in the end to duplicate all the code, but I am glad I got the functions to work in the end.
+
+## Possible expansions
+
+I would be interested in looking into other tests I could perform (in particular, tests on variances, or test for normality).
+
+## Summary
+
+Most of the variables seemed to not have much effect on overall sleep time. This was a bit surprising to me, as I would've expected bluelight filter, for example to have an impact. It would be interesting to see more data and see if more of a difference would come out. I would also be interested in seeing data for times people go to sleep/wake up, as maybe bluelight has more of an effect on the time you fall asleep than how long you sleep for.
+
+Based on distribution shapes and group sizes, non-parametric may be better, but both parametric and non-parametric gave the same decisions (except for meals/day), so either choice would be appropriate in the majority of cases.
+
+# References
+
+https://www.kaggle.com/datasets/krupa1999/sleep-pattern
+
+https://sixsigmastudyguide.com/f-distributionf-statistic-f-test/
+
+https://dzchilds.github.io/stats-for-bio/two-sample-t-test.html
+
+Hollander, Myles, et al. *Nonparametric Statistical Methods*, John Wiley & Sons, Incorporated, 2013. *ProQuest Ebook Central*, https://ebookcentral.proquest.com/lib/villanova-ebooks/detail.action?docID=1550549.
