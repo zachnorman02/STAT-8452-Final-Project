@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Zach Norman">
 
 <title>Final Project</title>
 <style>
@@ -88,6 +89,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Zach Norman </p>
+          </div>
+  </div>
     
   
     
@@ -140,6 +147,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>There are a couple of rows that appear to be close-duplicates (only difference is sleep time: one is 2 hours (the only non-binned value), and the other is 2-3 hours (which includes the non-binned value)). In addition, they both have sleep duration values of 6.7575, a strange value– which also equals the sample mean of the dataset. I have decided to do my analyses both with these 2 rows and excluding these 2 rows, to see what impact they may have.</p>
+<p>In addition, I debated whether to keep screen time as-is and look at the bins as separate groups, or turn them into numerical data. In the end, I looked at them as numerical data, but maybe an extension of this project would be also looking at them as groups to see what impact there may be.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(data) <span class="ot">=</span> <span class="fu">make.names</span>(<span class="fu">colnames</span>(data))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> data <span class="sc">%&gt;%</span></span>
@@ -870,10 +878,11 @@ data:  sleep.time by beverage
 Kruskal-Wallis chi-squared = 4.89, df = 3, p-value = 0.18</code></pre>
 </div>
 </div>
-<p>The ANOVAs are borderline but reject <span class="math inline">\(Ho\)</span>. This is important to note because if we were not doing Kruskal-Wallis, we would note that the data does not look normally distributed. It could be from a normal population, but not all of the data is unimodal (or even bimodal), making me hesitant. Kruskal-Wallis also rejects <span class="math inline">\(Ho\)</span> but more confidently, as the p-values are a bit higher. Based on the distributions of the groups and all group sizes being less than 30, I’d prefer to go with Kruskal-Wallis here.</p>
+<p>The ANOVAs are borderline but do not reject <span class="math inline">\(Ho\)</span>. This is important to note because if we were not doing Kruskal-Wallis, we would note that the data does not look normally distributed. It could be from a normal population, but not all of the data is unimodal (or even bimodal), making me hesitant. Kruskal-Wallis also does not reject <span class="math inline">\(Ho\)</span> but more confidently, as the p-values are a bit higher. Based on the distributions of the groups and all group sizes being less than 30, I’d prefer to go with Kruskal-Wallis here.</p>
 </section>
 <section id="exercise" class="level3">
 <h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
+<p>It is thought that exercise may improve sleep quality and length.</p>
 <p>ANOVA: <span class="math inline">\(H_0: \mu_Y = \mu_N = \mu_S\)</span>, <span class="math inline">\(H_a: \text{at least one is different}\)</span></p>
 <p>Kruskal-Wallis: <span class="math inline">\(H_0: F_Y = F_N = F_S = F\)</span>, <span class="math inline">\(H_a: \text{at least one distribution is different}\)</span></p>
 <div class="cell">
@@ -927,6 +936,7 @@ Kruskal-Wallis chi-squared = 0.80614, df = 2, p-value = 0.6683</code></pre>
 </div>
 </div>
 <p>The p-values are all very high. Both tests do not reject <span class="math inline">\(H_0\)</span>, there is not enough evidence to suggest that amount of exercise has an impact on sleep time.</p>
+<p>All of the tests do not reject <span class="math inline">\(H_0\)</span>. There is not enough evidence to suggest exercise influences amount of sleep.</p>
 </section>
 </section>
 </section>
@@ -1522,7 +1532,7 @@ Level     Percentile            BCa
 Calculations and Intervals on Original Scale</code></pre>
 </div>
 </div>
-<p>In all cases, our mean and median are contained within the confidence intervals.</p>
+<p>In all cases, our mean and median are contained within the confidence intervals. The t-test interval is the highest, and the bootstrapped intervals tend to tighten and shift higher as more iterations are done.</p>
 </section>
 </section>
 <section id="conclusion" class="level1">
@@ -1533,11 +1543,11 @@ Calculations and Intervals on Original Scale</code></pre>
 </section>
 <section id="possible-expansions" class="level2">
 <h2 class="anchored" data-anchor-id="possible-expansions">Possible expansions</h2>
-<p>I would be interested in looking into other tests I could perform (in particular, tests on variances, or test for normality).</p>
+<p>I would be interested in looking into other tests I could perform (in particular, tests on variances, or test for normality). I also may have also made histograms in addition to the density plots to get an idea of the distribution, especially if there are potentially gaps in the data due to small sample size. I would also maybe look at screen time, which was originally binned, as separate groups instead of turning them into numerical data to see if that made a difference in significance as well. In addition, it may be interesting to instead group exercise into yes/sometimes and no rather than having it as 3 separate groups.</p>
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
-<p>Most of the variables seemed to not have much effect on overall sleep time. This was a bit surprising to me, as I would’ve expected bluelight filter, for example to have an impact. It would be interesting to see more data and see if more of a difference would come out. I would also be interested in seeing data for times people go to sleep/wake up, as maybe bluelight has more of an effect on the time you fall asleep than how long you sleep for.</p>
+<p>Most of the variables seemed to not have much effect on overall sleep time. This was a bit surprising to me, as I would’ve expected bluelight filter, for example to have an impact. It would be interesting to see more data and see if more of a difference would come out. I would also be interested in seeing data for times people go to sleep/wake up, as maybe bluelight has more of an effect on the time you fall asleep than how long you sleep for. In addition, this is survey data, so if data is self-reported, that could have an impact on results as well.</p>
 <p>Based on distribution shapes and group sizes, non-parametric may be better, but both parametric and non-parametric gave the same decisions (except for meals/day), so either choice would be appropriate in the majority of cases.</p>
 </section>
 </section>
